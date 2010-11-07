@@ -11,15 +11,16 @@ public class Homes extends Plugin {
 	public void initialize() {
 		PluginListener listener = new HomesListener();
 		etc.getLoader().addListener(PluginLoader.Hook.COMMAND, listener, this, PluginListener.Priority.LOW);
-		etc.getInstance().addCommand("/homes", "- multihome support.");
 		log.info(name + " initialized");
 	}
 
 	public void disable() {
+		etc.getInstance().removeCommand("/homes");
 		log.info(name + " disabled");
 	}
 
 	public void enable() {
+		etc.getInstance().addCommand("/homes", "- multihome support.");
 		log.info(name + " enabled");
 	}
 
