@@ -27,9 +27,16 @@ public class Homes extends Plugin {
 		public boolean onCommand(Player player, String[] split) {
 			if (split[0].equalsIgnoreCase("/homes") && player.canUseCommand(split[0])) {
 				boolean usage = false;
-				if (split.length == 3 && split[2].trim().length() > 0) {
-					String name = split[2].trim();
-
+				
+				String name = "";
+				if (split.length >= 3) {
+					for (int i = 2; i < split.length; i++ )
+						name += split[i] + " ";
+					
+					name = name.trim();
+				}
+				
+				if (split.length >= 3 && name.length() > 0) {
 					if (split[1].equalsIgnoreCase("add")) {
 						Connection conn = etc.getSQLConnection();
 						PreparedStatement st = null;
@@ -60,13 +67,36 @@ public class Homes extends Plugin {
 					} else if (split[1].equalsIgnoreCase("del")) {
 						Connection conn = etc.getSQLConnection();
 						PreparedStatement st = null;
+						ResultSet rs = null;
 						try {
-							st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND beschrijving = ?");
+							st = conn.prepareStatement("SELECT beschrijving FROM savehomes WHERE name = ? AND beschrijving LIKE ? ORDER BY beschrijving");
 							st.setString(1, player.getName());
-							st.setString(2, name);
-							st.executeUpdate();
+							st.setString(2, name + "%");
+							rs = st.executeQuery();
+							
+							if (rs.next()) {
+								if (rs.isLast() || rs.getString(1).equalsIgnoreCase(name)) {
+									name = rs.getString(1);
+									rs.close();
+									st.close();
+									
+									st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND beschrijving = ?");
+									st.setString(1, player.getName());
+									st.setString(2, name);
+									st.executeUpdate();
+		
+									player.sendMessage(Colors.Green + "Home '" + name + "' deleted.");
+								} else {
+									
+									String msg = Colors.Rose + "Found multiple results: " + rs.getString(1);
+									while (rs.next())
+										msg += ", " + rs.getString(1);
 
-							player.sendMessage(Colors.Green + "Home '" + name + "' deleted.");
+									player.sendMessage(msg);
+								}
+							} else {
+								player.sendMessage(Colors.Rose + "No home found for: " + name);
+							}
 						} catch (Exception e) {
 							log.info("homes: Error deleting '" + name + "' of player '" + player.getName() + "' error: ");
 							e.printStackTrace();
@@ -76,6 +106,8 @@ public class Homes extends Plugin {
 									conn.close();
 								if (st != null)
 									st.close();
+								if (rs != null)
+									rs.close();
 							} catch (Exception e) {
 							}
 						}
