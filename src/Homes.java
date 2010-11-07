@@ -34,7 +34,7 @@ public class Homes extends Plugin {
 						Connection conn = etc.getSQLConnection();
 						PreparedStatement st = null;
 						try {
-							st = conn.prepareStatement("INSERT INTO savehomes SET (name, x, y, z, rotX, rotY, beschrijving) VALUES (?,?,?,?,?,?,?)");
+							st = conn.prepareStatement("INSERT INTO savehomes (name, x, y, z, rotX, rotY, beschrijving) VALUES (?,?,?,?,?,?,?)");
 							st.setString(1, player.getName());
 							st.setDouble(2, player.getX());
 							st.setDouble(3, player.getY());
@@ -44,7 +44,7 @@ public class Homes extends Plugin {
 							st.setString(7, name);
 							st.executeUpdate();
 
-							player.sendMessage(Colors.Green + "Home:'" + name + "' saved.");
+							player.sendMessage(Colors.Green + "Home '" + name + "' saved.");
 						} catch (Exception e) {
 							log.info("homes: Error saving '" + name + "' of player '" + player.getName() + "' error: ");
 							e.printStackTrace();
@@ -66,7 +66,7 @@ public class Homes extends Plugin {
 							st.setString(2, name);
 							st.executeUpdate();
 
-							player.sendMessage(Colors.Green + "Home:'" + name + "' deleted.");
+							player.sendMessage(Colors.Green + "Home '" + name + "' deleted.");
 						} catch (Exception e) {
 							log.info("homes: Error deleting '" + name + "' of player '" + player.getName() + "' error: ");
 							e.printStackTrace();
@@ -96,7 +96,7 @@ public class Homes extends Plugin {
 									home.Group = "";
 									home.Name = player.getName();
 									etc.getInstance().changeHome(home);
-									player.sendMessage(Colors.Green + "Home:'" + name + "' loaded. It's your /home now!");
+									player.sendMessage(Colors.Green + "Home '" + rs.getString(1) + "' loaded. It's your /home now!");
 								} else {
 									String msg = Colors.Rose + "Found multiple results: " + rs.getString(1);
 									while (rs.next())
