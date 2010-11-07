@@ -28,20 +28,28 @@ public class Homes extends Plugin {
 		public boolean onCommand(Player player, String[] split) {
 			if (split[0].equalsIgnoreCase("/homes") && player.canUseCommand(split[0])) {
 				boolean usage = false;
-				
+
 				String name = "";
 				if (split.length >= 3) {
-					for (int i = 2; i < split.length; i++ )
+					for (int i = 2; i < split.length; i++)
 						name += split[i] + " ";
-					
+
 					name = name.trim();
 				}
-				
+
 				if (split.length >= 3 && name.length() > 0) {
 					if (split[1].equalsIgnoreCase("add")) {
 						Connection conn = etc.getSQLConnection();
 						PreparedStatement st = null;
 						try {
+							// Delete before inserting
+							st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND beschrijving = ?");
+							st.setString(1, player.getName());
+							st.setString(2, name);
+							st.executeUpdate();
+							st.close();
+							
+							// Insert
 							st = conn.prepareStatement("INSERT INTO savehomes (name, x, y, z, rotX, rotY, beschrijving) VALUES (?,?,?,?,?,?,?)");
 							st.setString(1, player.getName());
 							st.setDouble(2, player.getX());
@@ -74,21 +82,21 @@ public class Homes extends Plugin {
 							st.setString(1, player.getName());
 							st.setString(2, name + "%");
 							rs = st.executeQuery();
-							
+
 							if (rs.next()) {
 								if (rs.isLast() || rs.getString(1).equalsIgnoreCase(name)) {
 									name = rs.getString(1);
 									rs.close();
 									st.close();
-									
+
 									st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND beschrijving = ?");
 									st.setString(1, player.getName());
 									st.setString(2, name);
 									st.executeUpdate();
-		
+
 									player.sendMessage(Colors.Green + "Home '" + name + "' deleted.");
 								} else {
-									
+
 									String msg = Colors.Rose + "Found multiple results: " + rs.getString(1);
 									while (rs.next())
 										msg += ", " + rs.getString(1);
@@ -169,14 +177,14 @@ public class Homes extends Plugin {
 						String msg = Colors.Green;
 						if (rs.next()) {
 							msg += "Your homes: " + Colors.White + rs.getString(1);
-							
+
 							while (rs.next())
 								msg += ", " + rs.getString(1);
-							
+
 						} else {
 							msg += "No homes found";
 						}
-						player.sendMessage( msg );
+						player.sendMessage(msg);
 					} catch (Exception e) {
 						log.info("homes: Error listing homes of player '" + player.getName() + "' error: ");
 						e.printStackTrace();
