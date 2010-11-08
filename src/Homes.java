@@ -10,7 +10,7 @@ public class Homes extends Plugin {
 
 	public void initialize() {
 		PluginListener listener = new HomesListener();
-		etc.getLoader().addListener(PluginLoader.Hook.COMMAND, listener, this, PluginListener.Priority.LOW);
+		etc.getLoader().addListener(PluginLoader.Hook.COMMAND, listener, this, PluginListener.Priority.MEDIUM);
 		log.info(name + " initialized");
 	}
 
@@ -43,14 +43,14 @@ public class Homes extends Plugin {
 						PreparedStatement st = null;
 						try {
 							// Delete before inserting
-							st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND beschrijving = ?");
+							st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND description = ?");
 							st.setString(1, player.getName());
 							st.setString(2, name);
 							st.executeUpdate();
 							st.close();
 							
 							// Insert
-							st = conn.prepareStatement("INSERT INTO savehomes (name, x, y, z, rotX, rotY, beschrijving) VALUES (?,?,?,?,?,?,?)");
+							st = conn.prepareStatement("INSERT INTO savehomes (name, x, y, z, rotX, rotY, description) VALUES (?,?,?,?,?,?,?)");
 							st.setString(1, player.getName());
 							st.setDouble(2, player.getX());
 							st.setDouble(3, player.getY());
@@ -78,7 +78,7 @@ public class Homes extends Plugin {
 						PreparedStatement st = null;
 						ResultSet rs = null;
 						try {
-							st = conn.prepareStatement("SELECT beschrijving FROM savehomes WHERE name = ? AND beschrijving LIKE ? ORDER BY beschrijving");
+							st = conn.prepareStatement("SELECT description FROM savehomes WHERE name = ? AND description LIKE ? ORDER BY description");
 							st.setString(1, player.getName());
 							st.setString(2, name + "%");
 							rs = st.executeQuery();
@@ -89,7 +89,7 @@ public class Homes extends Plugin {
 									rs.close();
 									st.close();
 
-									st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND beschrijving = ?");
+									st = conn.prepareStatement("DELETE FROM savehomes WHERE name = ? AND description = ?");
 									st.setString(1, player.getName());
 									st.setString(2, name);
 									st.executeUpdate();
@@ -125,7 +125,7 @@ public class Homes extends Plugin {
 						PreparedStatement st = null;
 						ResultSet rs = null;
 						try {
-							st = conn.prepareStatement("SELECT beschrijving, x, y, z, rotX, rotY FROM savehomes WHERE name = ? AND beschrijving LIKE ? ORDER BY beschrijving");
+							st = conn.prepareStatement("SELECT description, x, y, z, rotX, rotY FROM savehomes WHERE name = ? AND description LIKE ? ORDER BY description");
 							st.setString(1, player.getName());
 							st.setString(2, name + "%");
 							rs = st.executeQuery();
@@ -170,7 +170,7 @@ public class Homes extends Plugin {
 					PreparedStatement st = null;
 					ResultSet rs = null;
 					try {
-						st = conn.prepareStatement("SELECT beschrijving FROM savehomes WHERE name = ? ORDER BY beschrijving");
+						st = conn.prepareStatement("SELECT description FROM savehomes WHERE name = ? ORDER BY description");
 						st.setString(1, player.getName());
 						rs = st.executeQuery();
 
