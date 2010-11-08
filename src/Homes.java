@@ -36,6 +36,8 @@ public class Homes extends Plugin {
 
 					name = name.trim();
 				}
+				
+				String nameEscaped = name.replaceAll("%", "\\%").replaceAll("_", "\\_");
 
 				if (split.length >= 3 && name.length() > 0) {
 					if (split[1].equalsIgnoreCase("add")) {
@@ -80,7 +82,7 @@ public class Homes extends Plugin {
 						try {
 							st = conn.prepareStatement("SELECT description FROM savehomes WHERE name = ? AND description LIKE ? ORDER BY description");
 							st.setString(1, player.getName());
-							st.setString(2, name + "%");
+							st.setString(2, nameEscaped + "%");
 							rs = st.executeQuery();
 
 							if (rs.next()) {
@@ -127,7 +129,7 @@ public class Homes extends Plugin {
 						try {
 							st = conn.prepareStatement("SELECT description, x, y, z, rotX, rotY FROM savehomes WHERE name = ? AND description LIKE ? ORDER BY description");
 							st.setString(1, player.getName());
-							st.setString(2, name + "%");
+							st.setString(2, nameEscaped + "%");
 							rs = st.executeQuery();
 
 							if (rs.next()) {
