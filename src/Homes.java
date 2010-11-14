@@ -135,7 +135,7 @@ public class Homes extends Plugin {
 							if (rs.next()) {
 								if (rs.isLast() || rs.getString(1).equalsIgnoreCase(name)) {
 									Warp home = new Warp();
-									home.Location = new Location(rs.getDouble(2), rs.getDouble(3), rs.getDouble(4), rs.getFloat(5), rs.getFloat(6));
+									home.Location = new Location(rs.getDouble(2), rs.getDouble(3)+1, rs.getDouble(4), rs.getFloat(5), rs.getFloat(6));
 									home.Group = "";
 									home.Name = player.getName();
 									etc.getInstance().changeHome(home);
